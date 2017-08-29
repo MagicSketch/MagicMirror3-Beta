@@ -1,0 +1,74 @@
+{
+	"name": "Magic Mirror 3.0.6 (28)",
+ 	"description" : "Image Perspective Transformation Plugin for Sketch",
+	"author": "James Tang",
+    "authorEmail" : "james@magicsketch.io",
+	"homepage": "https://github.com/MagicSketch/MagicMirror",
+    "identifier" : "io.magicsketch.mirror",
+	"compatibleVersion": "44",
+	"build": 28,
+	"version": "3.0.6",
+
+    "commands": [
+                 {
+                 "name" : "Enable MagicMirror",
+                 "identifier" : "enable",
+                 "shortcut" : "",
+                 "script" : "oncommand.js",
+                 "handler" : "enable"
+                 },
+                 {
+                 "name" : "Disable MagicMirror",
+                 "identifier" : "disable",
+                 "shortcut" : "",
+                 "script" : "oncommand.js",
+                 "handler" : "disable"
+                 },
+                 {
+                     "script" : "onstartup.js",
+                     "handlers" : {
+                         "actions" : {
+                         "Startup" : "onStartup",
+                         "OpenDocument":"onOpenDocument",
+                         "SketchAsync.refresh" : "onRefresh",
+                         }
+                      },
+                 },
+                 {
+                 "script" : "onchange.js",
+                 "handlers" : {
+                     "actions" : {
+                         "SelectionChanged.finish" : "onSelectionChanged",
+                         "SketchAsync.refresh" : "onRefresh",
+                         "-ArtboardChanged.finish" : "onArtboardChanged",
+                         "-LayersMoved.finish" : "onLayersMoved",
+                         "-AddFill.finish": "onAddFill",
+                         "-Edit.finish": "onEdit",
+                         "-ToggleSelection.finish": "onToggleSelection",
+                     }
+                     },
+                 },
+								 {
+										"script" : "onuseraction.js",
+										"handlers" : {
+												"actions" : {
+													"MagicMirror.onIncludeArtboard" : "onArtboardPicked",
+													"MagicMirror.onImageQualitySelected" : "onImageQualitySelected",
+													"MagicMirror.onRefresh" : "onRefresh",
+													"MagicMirror.onFlip" : "onFlip",
+													"MagicMirror.onRotate" : "onRotate",
+                                                    "MagicMirror.onOpenDocument": "onOpenDocument",
+												}
+										 },
+								},
+    ],
+	"menu": {
+	    "isRoot" : false,
+	    "shortcut" : "",
+		"title": "Magic Mirror 3",
+        "items": [
+                  "enable",
+                  "disable",
+		]
+	}
+}
