@@ -86,7 +86,7 @@ var onCurrentSelection = function(context, isOnRun) {
 
     var migrationFailed = false;
     if ( ! magicmirror.doMigration()) {
-        dlog("MagicMirror3: failed to do migration");
+        log("MagicMirror3: failed to do migration");
         migrationFailed = true;
     }
 
@@ -115,25 +115,25 @@ var onCurrentSelection = function(context, isOnRun) {
           var env = magicmirror.env();
           Mocha.sharedRuntime().setValue_forKey_(env, "io.magicsketch.mirror.env");
           document.showMessage(magicmirror.pluginName() + ": " + env);
-
+          
           // v3.1: background timer to check server notification. (3600sec)
           var softCheck = function checkAgain(sk, mm, interval){
               var identifier = context.plugin.valueForKey("_identifier");
               var disabledIdentifier = identifier + ".disabled";
               var isDisabled = NSUserDefaults.standardUserDefaults().boolForKey(disabledIdentifier);
-
+              
               // update user default cached message array
               mm.loadServerNotification();
-
+              
               if(!isDisabled){
                   // repeat update
                   COScript.currentCOScript().scheduleWithInterval_jsFunction(60*60, function(iv){
                                                                              checkAgain(sk, mm, iv);
                                                                              });
               }
-
+              
           }
-
+          
           // register interval refresh soft banner here
           COScript.currentCOScript().scheduleWithInterval_jsFunction(5, function(iv){
                                                                      softCheck(skinject, magicmirror, iv);
@@ -146,28 +146,25 @@ var onCurrentSelection = function(context, isOnRun) {
 //    effectiveLayers = [NSArray array];
       var section = configureSectionHeader(magicmirror, skinject);
       remember(section, "section")
-      dlog("onchange.js 1 before getEffectiveLayers ");
 
     var effectiveLayers = magicmirror.getEffectiveLayers(selection);
-
-      dlog("onchange.js 2 after getEffectiveLayers " + effectiveLayers);
     var async = dispatch_once_per_document("async", function() { return SketchAsync.alloc().init() })
     async.runInBackground_onCompletion_withIdentifier_(function(identifier) {
-                                             dlog("gettingEffectiveLayers " + identifier);
+                                             log("gettingEffectiveLayers " + identifier);
                                             var effectiveLayers = [];//magicmirror.getEffectiveLayers(selection);
                                              remember(identifier, "getEffectiveLayer");
 
-                                            dlog("section: " + section);
+                                            log("section: " + section);
 
                                              return effectiveLayers;
                                          },
                                          function(result, identifier) {
                                              if (remind("getEffectiveLayer") == identifier) {
-                                                 dlog("finish " + identifier);
+                                                 log("finish " + identifier);
                                                 var section = remind("section")
-                                                dlog("section: " + section);
+                                                log("section: " + section);
                                              } else {
-                                                 dlog("ignore this " + identifier)
+                                                 log("ignore this " + identifier)
                                                  return
                                              }
 
@@ -184,7 +181,7 @@ var onCurrentSelection = function(context, isOnRun) {
 
             },
             refresh: function() {
-                dlog("MM3: selectionController: refresh: selection " + selection);
+                log("MM3: selectionController: refresh: selection " + selection);
                 each(selection, function(layer) {
                     magicmirror.refreshLayer(layer);
                 });
@@ -204,7 +201,7 @@ var onCurrentSelection = function(context, isOnRun) {
             },
             imageQuality: function() {
                 each(effectiveLayers, function(layer) {
-
+                    
                 });
             },
             setImageQuality: function(value) {
@@ -220,9 +217,7 @@ var onCurrentSelection = function(context, isOnRun) {
         };
         return commonHandler;
     }
-
-    dlog("onchange.js 3");
-
+    
     var MM3NoneSelectionController = function() {
         var commonHandler = {
             refreshAll: function() {
@@ -231,30 +226,29 @@ var onCurrentSelection = function(context, isOnRun) {
         };
         return commonHandler;
     }
-                                                       dlog("onchange.js 4");
 
     var mmhandler = Class("MM3ViewControllerDelegate", NSObject, {
                           "controller:didSelectImageQuality:":function(viewController, option) {
-                              dlog("imageQualityDidSelect: " + option);
+                              log("imageQualityDidSelect: " + option);
                               magicmirror.trackForEvent("Picked ImageQuality", {"Image Quality":option, "Layer Type": selection[0].className()});
                               var controller = MM3SelectionController(selection);
                               controller.setImageQuality(option);
                           },
                           "controllerDidPressRotateLayer:": function(viewController) {
-                              dlog("rotateLayer");
+                              log("rotateLayer");
                               magicmirror.trackForEvent("Rotated Layer", {"Layer Type":selection[0].className()});
                               var controller = MM3SelectionController(selection);
                               controller.rotate();
                           },
                           "controllerDidPressFlipLayer:": function(viewController) {
-                              dlog("flipLayer");
+                              log("flipLayer");
                               magicmirror.trackForEvent("Flipped Layer", {"Layer Type":selection[0].className()});
                               var controller = MM3SelectionController(selection);
                               controller.flip();
                           },
                           "controllerDidPressRefreshLayer:": function(viewController) {
-                              dlog("refreshLayer");
-
+                              log("refreshLayer");
+                          
                               if (selection.length > 0){
                                 magicmirror.trackForEvent("Refreshed Layer", {"Layer Type": selection[0].className(), "Image Quality": magicmirror.imageQuality(selection[0])});
                                 var controller = MM3SelectionController(selection);
@@ -264,10 +258,10 @@ var onCurrentSelection = function(context, isOnRun) {
                                 var controller = MM3NoneSelectionController();
                                 controller.refreshAll();
                               }
-
+                          
                           },
                           "controller:didToggleIncludeInArtboards:":function(viewController, option) {
-                              dlog("setIncluded: " + option);
+                              log("setIncluded: " + option);
                               magicmirror.trackForEvent("Picked IncludeInArtboards", {"Set Include": (option==0?"NO":"YES")});
 //                              var layer = magicmirror.findLayer(viewController.identifier());
                               var controller = MM3SelectionController(selection);
@@ -277,38 +271,36 @@ var onCurrentSelection = function(context, isOnRun) {
 //                              magicmirror.setIncluded(layer, option);
                           },
                           "controllerDidPressProButton:": function(viewController) {
-                              dlog("didPressProButton:");
+                              log("didPressProButton:");
                               magicmirror.trackForEvent("Clicked SettingsButton", {});
                           },
                           "controllerDidPressActivateButton:": function(viewController) {
-                              dlog("didPressActivateButton:");
+                              log("didPressActivateButton:");
                               magicmirror.trackForEvent("Clicked ActivateButton", {});
                           },
                           "controllerDidPressActionButton:": function(viewController) {
-                              dlog("didPressActionButton:");
+                              log("didPressActionButton:");
                               magicmirror.trackForEvent("Clicked ActionButton", {});
                           },
                           "controllerDidPressReadMessageButton:messageId:": function(viewController, messageId) {
-                              dlog("didPressReadMessageButton:");
+                              log("didPressReadMessageButton:");
                               magicmirror.trackForEvent("Clicked ReadMessageButton", {"Message ID":messageId});
                           },
                           "controllerDidPressSoftBannerActionButton:messageId:": function(viewController, messageId) {
-                              dlog("didPressSoftBannerActionButton:");
+                              log("didPressSoftBannerActionButton:");
                               magicmirror.trackForEvent("Clicked SoftBannerActionButton", {"Message ID":messageId});
                           },
                           "controllerNeedToUpdateLayout:": function(viewController){
                               skinject.reloadData();
                           }
                           }).alloc().init();
-                                                       dlog("onchange.js 5");
 
     startTimer.lab("before printSelectionTimer");
     printSelectionTimer.start()
-//    magicmirror.selection(selection).description();
+    magicmirror.selection(selection).description();
     printSelectionTimer.stop();
     startTimer.lab("after printSelectionTimer");
     // 0.8
-                                                       dlog("onchange.js 6");
 
     startTimer.lab("before createHeader");
 
@@ -318,28 +310,22 @@ var onCurrentSelection = function(context, isOnRun) {
 //        header = [[MM3ViewController alloc] initWithNibName:"MM3InspectorHeader" bundle:[NSBundle bundleForClass:MM3ViewController]];
 //        header.reuseIdentifier = "header";
 //    } else {
-////        dlog("cell dequeued (" + header.reuseIdentifier() + ")");
+////        log("cell dequeued (" + header.reuseIdentifier() + ")");
 //    }
 //    header.delegate = mmhandler;
-
-//                                                       dlog("onchange.js 7 mmhandler: " + mmhandler );
-  //                                                     Mocha.sharedRuntime().setValue_forKey_(1, "1");
-
-                                                       dlog("onchange.js 7 mmhandler: " + mmhandler );
-
     Mocha.sharedRuntime().setValue_forKey_(mmhandler, "MM3ViewControllerDelegate");
 
     startTimer.lab("after createHeader");
 
 
     if ( ! magicmirror.isBuildInSync()) {
-        dlog("magicmirror is not in sync");
+        log("magicmirror is not in sync");
         var avc = skinject.dequeueCell("outofsync");
         if ( ! avc) {
             avc = [[MM3ViewController alloc] initWithNibName:"MM3ActivationCell" bundle:[NSBundle bundleForClass:MM3ViewController]];
             avc.reuseIdentifier = "outofsync";
         } else {
-//            dlog("cell dequeued (" + avc.reuseIdentifier() + ")");
+//            log("cell dequeued (" + avc.reuseIdentifier() + ")");
         }
         avc.delegate = mmhandler;
         avc.message = "Plugin is out of sync, please save your work and restart Sketch to continue using.";
@@ -349,13 +335,13 @@ var onCurrentSelection = function(context, isOnRun) {
         avc.reloadData();
         section.addCustomCell(avc);
     } else if (magicmirror.isExpired()) {
-        dlog("magicmirror is expired");
+        log("magicmirror is expired");
         var avc = skinject.dequeueCell("expired");
         if ( ! avc) {
             avc = [[MM3ViewController alloc] initWithNibName:"MM3ActivationCell" bundle:[NSBundle bundleForClass:MM3ViewController]];
             avc.reuseIdentifier = "activation";
         } else {
-//            dlog("cell dequeued (" + avc.reuseIdentifier() + ")");
+//            log("cell dequeued (" + avc.reuseIdentifier() + ")");
         }
         avc.delegate = mmhandler;
         avc.message = magicmirror.expiredMessage();
@@ -369,7 +355,7 @@ var onCurrentSelection = function(context, isOnRun) {
             avc = [[MM3ViewController alloc] initWithNibName:"MM3ActivationCell" bundle:[NSBundle bundleForClass:MM3ViewController]];
             avc.reuseIdentifier = "migration";
         } else {
-//            dlog("cell dequeued (" + avc.reuseIdentifier() + ")");
+//            log("cell dequeued (" + avc.reuseIdentifier() + ")");
         }
         avc.delegate = mmhandler;
         avc.message = "Migration failed, please contact support!"
@@ -378,14 +364,14 @@ var onCurrentSelection = function(context, isOnRun) {
         avc.reloadData();
         section.addCustomCell(avc);
     } else if ( ! magicmirror.isActivated()) {
-       dlog("magicmirror not activated");
+       log("magicmirror not activated");
 
         var avc = skinject.dequeueCell("notActivated");
         if ( ! avc) {
             avc = [[MM3ViewController alloc] initWithNibName:"MM3ActivationCell" bundle:[NSBundle bundleForClass:MM3ViewController]];
             avc.reuseIdentifier = "notActivated";
         } else {
-//            dlog("cell dequeue (" + avc.reuseIdentifier() + ")");
+//            log("cell dequeue (" + avc.reuseIdentifier() + ")");
         }
         avc.delegate = mmhandler;
         avc.reloadData();
@@ -393,17 +379,16 @@ var onCurrentSelection = function(context, isOnRun) {
 
     } else if (selection.count() == 0) {
 
-                                                       dlog("onchange.js 8 selection.count() == 0");
         // If nothing is selected, we just want to hide any previous message that might have been shown.
         document.hideMessage();
-
+        
         // 3.0.2: Always make mirror panel visible:
         var lvc = skinject.dequeueCell("layerToolbar");
         if ( ! lvc) {
             lvc = [[MM3ViewController alloc] initWithNibName:"MM3LayerToolbar" bundle:[NSBundle bundleForClass:MM3ViewController]];
             lvc.reuseIdentifier = "layerToolbar";
         } else {
-            //                dlog("cell dequeue (" + lvc.reuseIdentifier() + ")");
+            //                log("cell dequeue (" + lvc.reuseIdentifier() + ")");
         }
         lvc.delegate = mmhandler;
         lvc.imageQuality = -1;
@@ -415,7 +400,6 @@ var onCurrentSelection = function(context, isOnRun) {
 
 
         var includable = [NSMutableArray array];
-                                                       dlog("onchange.js 8 else selection " + selection);
 
         if (selection.count() > 0) {
 
@@ -425,7 +409,6 @@ var onCurrentSelection = function(context, isOnRun) {
                     includable.addObject(layer);
                 }
             }
-                                                       dlog("onchange.js 8.1 includable " + includable);
 
             if (includable.count() > 0) {
                 startTimer.lab("before createArtboardToolbar");
@@ -435,7 +418,7 @@ var onCurrentSelection = function(context, isOnRun) {
                     avc = [[MM3ViewController alloc] initWithNibName:"MM3ArtboardToolbar" bundle:[NSBundle bundleForClass:MM3ViewController]];
                     avc.reuseIdentifier = "artboardToolbar";
                 } else {
-                    //                    dlog("cell dequeue (" + avc.reuseIdentifier() + ")");
+                    //                    log("cell dequeue (" + avc.reuseIdentifier() + ")");
                 }
                 avc.delegate = mmhandler;
                 avc.identifier = selection.firstObject().objectID()
@@ -445,14 +428,13 @@ var onCurrentSelection = function(context, isOnRun) {
                 startTimer.lab("-- after getThumbnail");
                 avc.imageQuality = magicmirror.imageQuality(includable);
                 avc.reloadData();
-                //                dlog("included: " + magicmirror.isIncluded(selected));
+                //                log("included: " + magicmirror.isIncluded(selected));
                 section.addCustomCell(avc);
 
                 startTimer.lab("after createArtboardToolbar");
             }
         }
 
-                                                       dlog("onchange.js 8.2 before getArtboards");
 
         startTimer.lab("before getArtboards");
         var lastArtboardLookup = remind("lastArtboardLookup") || [NSDictionary dictionary];
@@ -465,39 +447,32 @@ var onCurrentSelection = function(context, isOnRun) {
         }
         startTimer.lab("after getArtboards");
         var descriptor =  NSSortDescriptor.alloc().initWithKey_ascending_("name", true);
-        // dlog(descriptor)
+        // log(descriptor)
         artboards = artboards.sortedArrayUsingDescriptors([descriptor]);
         startTimer.lab("after sortArtboards");
 
         function createMenu(artboards, magicmirror) {
-
-                                                       dlog("onchange.js createMenu 0");
             createMenuTimer.start()
             var menu = [];
-
-                                                       dlog("onchange.js createMenu 1");
             menu.push({
                     identifier: nil,
                     title: "No Artboard",
                     image: nil,
                     });
-
+    
             menu.push({
                     type:"separator",
                     });
 
-                                                       dlog("onchange.js createMenu 2");
             for (var i = 0; i < artboards.count(); i++) {
                 var artboard = artboards.objectAtIndex(i);
 //                if (magicmirror.isIncluded(artboard) == 1) {
 
-                                                       dlog("onchange.js createMenu 3 artboard: " + artboard);
                     createUITimer.stop();
                     generateThumbnailTimer.start();
 
                     var image = magicmirror.getThumbnail(artboard, CGSizeMake(24, 24));
 
-                                                       dlog("onchange.js createMenu 3 image: " + image);
                     createUITimer.start();
                     generateThumbnailTimer.stop();
                     menu.push({
@@ -507,14 +482,12 @@ var onCurrentSelection = function(context, isOnRun) {
                             image: image,
                             });
 //                }
-
-                                                       dlog("onchange.js createMenu 3 after ");
             }
-
+    
 //            menu.push({
 //                    type:"separator",
 //                    });
-//
+//    
 //            each(magicmirror.getPlaceholders(), function(placeholder) {
 //                menu.push(placeholder)
 //                });
@@ -531,35 +504,23 @@ var onCurrentSelection = function(context, isOnRun) {
                       });
 
             createMenuTimer.stop();
-
-
-                                                       dlog("onchange.js createMenu 4");
             return menu;
         }
-
-                                                       dlog("onchange.js 8.3 after getArtboards");
-
 
         // Create Layer Toolbar
         createUITimer.stop();
         startTimer.lab("before createMenu");
-
-                                                       dlog("onchange.js 8.4 before create menu");
-
         var menu = createMenu(artboards, magicmirror);
         startTimer.lab("after createMenu");
-
-
-                                                       dlog("onchange.js 8.4 after create menu");
         createUITimer.start();
-
+    
         var selected = selection[0];
         var lvc = skinject.dequeueCell("layerToolbar");
         if ( ! lvc) {
             lvc = [[MM3ViewController alloc] initWithNibName:"MM3LayerToolbar" bundle:[NSBundle bundleForClass:MM3ViewController]];
             lvc.reuseIdentifier = "layerToolbar";
         } else {
-//                dlog("cell dequeue (" + lvc.reuseIdentifier() + ")");
+//                log("cell dequeue (" + lvc.reuseIdentifier() + ")");
         }
         lvc.delegate = mmhandler;
         lvc.imageQuality = selection.count() > 1 ? -1 : magicmirror.imageQuality(selected);
@@ -567,8 +528,7 @@ var onCurrentSelection = function(context, isOnRun) {
         lvc.reloadData();
         section.addCustomCell(lvc);
         // End creating Layer Toolbar
-                                                       dlog("onchange.js 8.4 after layer toolbar");
-
+        
         var nsmenu = menu ? [MM3Menu menuWithItems:menu] : nil;
 
         startTimer.lab("before createCells");
@@ -581,7 +541,7 @@ var onCurrentSelection = function(context, isOnRun) {
 
                                                                                                                      "popupCellSelectedDidChange:":function(cell) {
 
-                                                                                                                         dlog("popupCellSelectedDidChange:");
+                                                                                                                         log("popupCellSelectedDidChange:");
 
                                                                                                                          var identifier = NSString.stringWithString(cell.layerID());
                                                                                                                          var selectedIdentifier = cell.selectedIdentifier();
@@ -597,33 +557,33 @@ var onCurrentSelection = function(context, isOnRun) {
 
 
                                                                                                                          var type = representedObject["type"];
-                                                                                                                         dlog("type: " + type);
-                                                                                                                         dlog("selectedIdentifier: " + selectedIdentifier);
-                                                                                                                         dlog(representedObject);
+                                                                                                                         log("type: " + type);
+                                                                                                                         log("selectedIdentifier: " + selectedIdentifier);
+                                                                                                                         log(representedObject);
 
                                                                                                                          if (type == "action") {
                                                                                                                              var identifier = selectedIdentifier;
                                                                                                                              if (identifier == "manageArtboards") {
 
-                                                                                                                 dlog("manage artboards");
+                                                                                                                 log("manage artboards");
                                                                                                                  var controller = dispatch_once_per_document("MM3ManageArtboardWindow", function() {
                                                                                                                                                              var storyboard = [NSStoryboard storyboardWithName:@"MM3Storyboard" bundle:[NSBundle bundleForClass:MM3PopupCell]];
-                                                                                                                                                             dlog("storyboard: " + storyboard);
+                                                                                                                                                             log("storyboard: " + storyboard);
                                                                                                                       var windowController = [storyboard instantiateControllerWithIdentifier:"MM3ManageArtboardWindow"];
 
-                                                                                                                                                             dlog("windowController: " + windowController);
+                                                                                                                                                             log("windowController: " + windowController);
                                                                                                                                                              return windowController;
                                                                                                                                                              });
 
                                                                                                                  controller.showWindow(controller.window());
 
 
-
+                                                                                                                                    
                                                                                                                              }
                                                                                                                          } else {
                                                                                                                                  var artboardID = selectedIdentifier;
                                                                                                                                  var layer = magicmirror.findLayer(layerID);
-                                                                                                                                 dlog("layerID: " + layerID + " artboardID: " + artboardID + " symbolID: " + symbolInstanceID);
+                                                                                                                                 log("layerID: " + layerID + " artboardID: " + artboardID + " symbolID: " + symbolInstanceID);
 
                                                                                                                                  if (symbolInstanceID) {
                                                                                                                                     magicmirror.trackForEvent("Picked Artboard", {"Artboard Type": "Symbol"});
@@ -643,7 +603,6 @@ var onCurrentSelection = function(context, isOnRun) {
                                                           return delegate;
              });
 
-                                                       dlog("onchange 8.5 effectiveLayers: " + effectiveLayers);
         for (var i = 0; i < effectiveLayers.count(); i++) {
             var layer = effectiveLayers[i];
             var image = layer.previewImages().LayerListPreviewUnfocusedImage;
@@ -674,7 +633,7 @@ var onCurrentSelection = function(context, isOnRun) {
                 cell.reuseIdentifier = "popupCell";
                 cell.delegate = menuCellDelegate;
             } else {
-//                dlog("cell dequeue (" + cell.reuseIdentifier() + ")");
+//                log("cell dequeue (" + cell.reuseIdentifier() + ")");
             }
 
             cell.name = layer.name();
@@ -689,7 +648,7 @@ var onCurrentSelection = function(context, isOnRun) {
         startTimer.lab("after createCells");
 
     }
-
+      
     // 3.1: show banner if user default message array is not empty
       var serverMessages = NSUserDefaults.standardUserDefaults().valueForKey('io.magicsketch.mirror.servermessage');
     if (serverMessages && serverMessages.length > 0){
@@ -701,29 +660,29 @@ var onCurrentSelection = function(context, isOnRun) {
 //        }
 //        var rString = randomString(parseInt(Math.random()*64)+1, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 //        var displayMessage = {"message": rString, "action": "", "id": 999};
-
+        
         for(var i=serverMessages.length-1; i>=0; i--){
             if(serverMessages[i].read == 0){
                 displayMessage = serverMessages[i];
                 break;
             }
         }
-
+        
         if(displayMessage.id != -1){
             var banner = skinject.dequeueCell("softBanner");
             if ( ! banner) {
                 banner = [[MM3ResizeViewController alloc] initWithNibName:"MM3SoftBannerCell" bundle:[NSBundle bundleForClass:MM3ViewController]];
                 banner.reuseIdentifier = "softBanner";
             } else {
-                //        dlog("cell dequeued (" + header.reuseIdentifier() + ")");
+                //        log("cell dequeued (" + header.reuseIdentifier() + ")");
             }
-
+            
             banner.delegate = mmhandler;
             banner.showSoftMessage_action_messageId(displayMessage.message, displayMessage.action, displayMessage.id);
-
+            
             var section = skinject.addCustomSection(banner);
         }
-
+        
     }
 
     startTimer.lab("before reloadUI");
@@ -738,7 +697,7 @@ var onCurrentSelection = function(context, isOnRun) {
 
     if (runCount >= 1 && selection.count() >= 1) {
 //        if (runCount > 1) {
-        dlog("timers: " + dictify(timers));
+        log("timers: " + dictify(timers));
         message = "MagicMirror: " + effectiveLayers.count() + " layers selected. (" + timeElasped + "s): " + dictify({
                                                                                                                      "initialize": startTimer.getLap("after check").mark,
                                                                                                                      "Get Effective Layers": startTimer.getLap("after getEffectiveLayers").elapsed,
@@ -748,10 +707,10 @@ var onCurrentSelection = function(context, isOnRun) {
 
         });
 //        each(timers, function(t) {
-//                dlog("timers:" + t);
+//                log("timers:" + t); 
 //             t.print();
 //        });
-        dlog(message);
+        log(message);
 //        document.showMessage(message);
 
         if ( ! migrationFailed) {
@@ -774,29 +733,75 @@ var onSelectionChanged = function(context) {
     onCurrentSelection(context);
 
     return;
+    coscript.setShouldKeepAround(true)
+
+    var identifier = context.plugin.valueForKey("_identifier");
+    var magicmirror = dispatch_once_per_document("MagicMirrorJS", function() { return MagicMirrorJS(identifier) });
+    magicmirror.onSelectionChanged(context);
+
+    var skinject = dispatch_once_per_document("Skinject", function() { return Skinject(identifier) });
+    skinject.onSelectionChanged(context);
+
+    var section = configureSectionHeader(magicmirror, skinject)
+    configureLayerToolbar(magicmirror, skinject, section);
+
+
+    var document = context.actionContext.document;
+
+    if (document.respondsToSelector("selectedLayers")) {
+        selection = document.selectedLayers();   // Sketch 41 is NSArray, Sketch 42 returns MSLayerArray
+        if (selection.respondsToSelector("layers")) {
+            selection = selection.layers()
+        };
+    } else {
+        selection = document.selectedLayersA().layers();
+    }
+
+//    var effectiveLayers = magicmirror.getEffectiveLayers(selection);
+//    log("effectiveLayesr: " + effectiveLayers);
+
+    var async = dispatch_once_per_document("async", function() { return SketchAsync.alloc().init() })
+    async.runInBackground_onCompletion_withIdentifier_(function(identifier) {
+                                            log("gettingEffectiveLayers " + identifier);
+                                            var effectiveLayers = magicmirror.getEffectiveLayers(selection);
+
+                                            remember(identifier, "getEffectiveLayer");
+                                            //return effectiveLayers;
+                                        },
+                                        function(result, identifier) {
+                                            if (remind("getEffectiveLayer") == identifier) {
+                                                log("finish " + identifier);
+                                            } else {
+                                                log("ignore this " + identifier)
+                                            }
+                                        },
+                                        "getEffectiveLayer");
+
+//    configureArtboardOptions(context);
+//    configureCells(context);
 
 };
 
 var onArtboardChanged = function(context) {
-    dlog("artboard changed");
+    log("artboard changed");
 }
 
 var onLayersMoved = function(context) {
-    dlog("layers moved");
+    log("layers moved");
 }
 
 var onAddFill = function(context) {
-    dlog("fill added");
+    log("fill added");
 }
 
 var onEdit = function(context) {
-    dlog("edit");
+    log("edit");
 }
 
 var onToggleSelection = function(context) {
-    dlog("toggle selection");
+    log("toggle selection");
 }
 
 var onAction = function(context) {
-    dlog("action: " + context.action);
+    log("action: " + context.action);
 }

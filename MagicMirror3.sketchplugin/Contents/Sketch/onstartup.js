@@ -5,26 +5,26 @@
 @import 'MagicMirrorUI.js'
 
 var onStartup = function(context) {
-    dlog("onStartup");
+    log("onStartup");
 
 //    var async = SketchAsync.alloc().init()
 //    async.runInBackground_callbackActionID_(function() {
-//                                                dlog("1+1=2")
+//                                                log("1+1=2")
 //                                            },
 //                                            "SketchAsync.refresh")
 //
 }
 
 var onOpenDocument = function(context) {
-    dlog("onOpenDocument: " + context);
+    log("onOpenDocument: " + context);
 
 }
 
 
 var onRefresh = function(context) {
-    dlog("onRefresh");
+    log("onRefresh");
 }
 
 var onFlip = function(context) {
-    dlog("onFlip from onstartup.js");
+    log("onFlip from onstartup.js");
 }

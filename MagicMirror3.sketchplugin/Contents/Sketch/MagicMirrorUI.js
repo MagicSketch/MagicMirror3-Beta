@@ -1,6 +1,5 @@
 @import 'Skinject.framework/Skinject.js'
 @import 'MagicMirror3.framework/MagicMirror.js'
-@import 'dlog.js'
 
 var configureSectionHeader = function(magicmirror, skinject) {
 
@@ -24,7 +23,7 @@ var configureLayerToolbar = function(magicmirror, skinject, section) {
         lvc = [[MM3ViewController alloc] initWithNibName:"MM3LayerToolbar" bundle:[NSBundle bundleForClass:MM3ViewController]];
         lvc.reuseIdentifier = "layerToolbar";
     } else {
-        //                dlog("cell dequeue (" + lvc.reuseIdentifier() + ")");
+        //                log("cell dequeue (" + lvc.reuseIdentifier() + ")");
     }
 //    lvc.delegate = mmhandler;
     lvc.imageQuality = -1;
