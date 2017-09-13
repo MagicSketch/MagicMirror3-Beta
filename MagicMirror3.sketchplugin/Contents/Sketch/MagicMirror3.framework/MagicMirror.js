@@ -1,7 +1,44 @@
 //@import '../SKCheck.js'
+@import 'dlog.js'
 
 var NSMakeRect = function(origin, size) {
     return NSRectFromString("{" + NSStringFromPoint(origin) + "," + NSStringFromSize(size) + "}");
+}
+
+var MMRectMake = function(x, y, width , height) {
+    return {
+    origin: {
+    x: x,
+    y: y
+    },
+    size: {
+    width: width,
+    height: height
+    }
+    };
+}
+
+var MM3RectMake = function(x, y, width, height) {
+    var rect = MM3Rect.alloc().init()
+    rect.x = x;
+    rect.y = y;
+    rect.width = width;
+    rect.height = height;
+    return rect;
+}
+
+var MMRectFromLayer = function(layer) {
+    try {
+        var bounds = layer.bounds()
+        return MMRectMake(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
+    } catch (e) {
+        var frame = layer.frame()
+        return MMRectMake(0, 0, frame.size().width, frame.size().height);
+    }
+}
+
+var NSRectGetSize = function(rect) {
+    return NSSizeFromString("{" + NSRectGetWidth(rect) + "," + NSRectGetHeight(rect));
 }
 
 var CGRectEqualsToRect = function(rect1, rect2) {
@@ -53,10 +90,10 @@ var enumerate = function(object, handler) {     // everything in nested array
 };
 var isNullOrNil = function(value) {
     if (value && [value isKindOfClass:NSNull]) {
-//        log("artboardID is null")
+//        dlog("artboardID is null")
         return true
     } else if (value) {
-  //      log("artboardID is not nil")
+  //      dlog("artboardID is not nil")
         return false
     }
     return true
@@ -164,7 +201,7 @@ var timer = function(name) {
             return time;
         },
         print: function() {
-          log('Timer: ' + name + ' finished in ' + _time + 'ms');
+          dlog('Timer: ' + name + ' finished in ' + _time + 'ms');
         }
     }
 
@@ -201,10 +238,6 @@ var MagicMirrorJS = function(identifier) {
     var _layerIterator, _flattener;
     var _licenseManager;
     var _versionChecker, _checkerDelegate;
-
-    var dlog = function(message) {
-        log(identifier + ": " + message);
-    }
 
     var pluginBundle = function(identifier) {
         var _application = NSApplication.sharedApplication();
@@ -246,10 +279,10 @@ var MagicMirrorJS = function(identifier) {
         var directory = sketchPath();
 
         if ([mocha loadFrameworkWithName:frameworkName inDirectory:directory]) {
-            dlog("loadFramework: `" + frameworkName + "` success!");
+            log("loadFramework: `" + frameworkName + "` success!");
             return true;
         } else {
-            dlog("❌  loadFramework: `" + frameworkName + "` failed!: " + directory);
+            log("❌  loadFramework: `" + frameworkName + "` failed!: " + directory);
             return false;
         }
     }
@@ -321,7 +354,7 @@ var MagicMirrorJS = function(identifier) {
                                         var build = NSUserDefaults.standardUserDefaults().objectForKey(_migrationIdentifier);
                                         return build;
                                    })();
-    
+
     var currentBuild = (function() {
                         return manifestForIdentifier(_pluginIdentifier).build
                         })();
@@ -363,7 +396,7 @@ var MagicMirrorJS = function(identifier) {
                      return;
                  }
              });
-        log("finish doMigration");
+        dlog("finish doMigration");
         return ! haveFails;
     }
     // End of Migrations
@@ -372,13 +405,6 @@ var MagicMirrorJS = function(identifier) {
     //
     // Maths
     //
-    var areaOfBounds = function(rect) {
-        var origin = rect.origin;
-        var size = rect.size;
-        var width = size.width - origin.y;
-        var height = size.height - origin.x;
-        return width*height;
-    }
     var areaOfTriangle = function(side1, side2, side3) {
         var perimeter = (side1 + side2 + side3)/2;
         var area = Math.sqrt(perimeter*((perimeter-side1)*(perimeter-side2)*(perimeter-side3)));
@@ -424,10 +450,10 @@ var MagicMirrorJS = function(identifier) {
 
         var masterContainsInstance = function(master, instance) {
             var allInstances = master.allInstances();
-            //     log("master: " + master.objectID())
+            //     dlog("master: " + master.objectID())
             for (var i = 0; i < allInstances.length; i++) {
                 var s = allInstances[i];
-                //         log("child: " + s.objectID())
+                //         dlog("child: " + s.objectID())
                 if (s.objectID() == instance.objectID()) {
                     return 1;
                 }
@@ -436,7 +462,7 @@ var MagicMirrorJS = function(identifier) {
         };
 
         var symbols = getAllSymbols();
-        //    log(symbols.length)
+        //    dlog(symbols.length)
         var master;
 
         for (var i = 0; i < symbols.length; i++) {
@@ -445,7 +471,7 @@ var MagicMirrorJS = function(identifier) {
                 master = s;
             }
         }
-        
+
         return master;
     };
 
@@ -461,7 +487,7 @@ var MagicMirrorJS = function(identifier) {
     }
 
     var fillImageOnLayer = function(layer, image) {
-        log("var fillImageonLayer");
+        dlog("var fillImageonLayer");
         var fills = layer.style().fills()
         var fill = nil;
 
@@ -502,7 +528,7 @@ var MagicMirrorJS = function(identifier) {
 
 
 //        request.includedLayerIDs = [NSMutableSet setWithArray:layer.parentArtboard().layers().valueForKeyPath("objectID")];
-//        log("ids: " + request.includedLayerIDs());
+//        dlog("ids: " + request.includedLayerIDs());
 
         var renderer = [MSExportRendererWithSVGSupport exporterForRequest:request colorSpace:[NSColorSpace sRGBColorSpace]];
         var image = renderer.image()
@@ -524,9 +550,9 @@ var MagicMirrorJS = function(identifier) {
     }
 
     var getPointsFromLayer = function(layer) {
-        log("getPointsFromLayer: " + layer);
+        dlog("getPointsFromLayer: " + layer);
         if (typeof layer === 'object' && ! layer.isKindOfClass(MSShapeGroup)) {
-            var bounds = layer.bounds()
+            var bounds = MMRectFromLayer(layer)
             var points = [
                           "{" + bounds.origin.x + "," + bounds.origin.y + "}",
                           "{" + bounds.size.width + "," + bounds.origin.y + "}",
@@ -534,12 +560,12 @@ var MagicMirrorJS = function(identifier) {
                           "{" + bounds.origin.x + "," + bounds.size.height + "}",
                           ];
 
-//            log("points: " + points);
+            dlog("points: " + points);
             return NSArray.arrayWithArray(points);
         }
 
         var selectionRect = function(layer) {
-            return layer.bounds();
+            return MMRectFromLayer(layer);
         }
 
         var straightPoints = function(layer, childIndex) {
@@ -614,8 +640,8 @@ var MagicMirrorJS = function(identifier) {
         layers = [NSMutableArray array];
 
 
-//        log("symbolizeLayers: count(array)" + count(array) + " symbolInstance: " + symbolInstance);
-//        log("array: " + array);
+//        dlog("symbolizeLayers: count(array)" + count(array) + " symbolInstance: " + symbolInstance);
+//        dlog("array: " + array);
         for (var i = 0; i < count(array); i++) {
             var layer = array[i];
             var dict = {}
@@ -632,7 +658,7 @@ var MagicMirrorJS = function(identifier) {
     var getEffectiveLayers = function(selection, forceRecursive) {
         var mslayer = selection;
         if (selection && [selection isKindOfClass:NSArray]) {
-            log("getEffectiveLayers: array selection " + selection);
+            dlog("getEffectiveLayers: array selection " + selection);
             var all = [NSMutableArray array];
             for (var i = 0; i < selection.count(); i++) {
                 var layer = selection[i];
@@ -655,14 +681,14 @@ var MagicMirrorJS = function(identifier) {
             }
             return all
         } else if (mslayer && [mslayer isKindOfClass:MSShapeGroup]) {
-//            log("getEffectiveLayers: shapegroup: " + mslayer.name() + " isvalid? " + validateLayer(mslayer));
+//            dlog("getEffectiveLayers: shapegroup: " + mslayer.name() + " isvalid? " + validateLayer(mslayer));
             return validateLayer(mslayer) ? [NSArray arrayWithObject:mslayer] : [];
         } else if (mslayer && [mslayer isKindOfClass:MSSymbolMaster]) {
-//            log("getEffectiveLayers: master: " + mslayer.name());
+//            dlog("getEffectiveLayers: master: " + mslayer.name());
 
             var children = mslayer.children()
 
-            log("getEffectiveLayers: master: " + mslayer.name() + " " + children);
+            dlog("getEffectiveLayers: master: " + mslayer.name() + " " + children);
             var all = [NSMutableArray array];
             for (var i = 0; i < children.count(); i++) {
                 var layer = children[i];
@@ -681,13 +707,13 @@ var MagicMirrorJS = function(identifier) {
         } else if (mslayer && [mslayer isKindOfClass:MSArtboardGroup]) {
 
             if ( ! forceRecursive) {
-                log("getEffectiveLayers: not recursive");
+                dlog("getEffectiveLayers: not recursive");
                 return [NSArray array];
             } else {
-                log("getEffectiveLayers: recursive");
+                dlog("getEffectiveLayers: recursive");
 
                 var children = mslayer.layers()
-                log("getEffectiveLayers: recursive: children " + children);
+                dlog("getEffectiveLayers: recursive: children " + children);
                 var all = [NSMutableArray array];
                 for (var i = 0; i < children.count(); i++) {
                     var layer = children[i];
@@ -704,18 +730,18 @@ var MagicMirrorJS = function(identifier) {
                 }
                 return all;
 
-                log("getEffectiveLayers: artboard test");
+                dlog("getEffectiveLayers: artboard test");
                 return [NSArray array];
             }
         } else if (mslayer && [mslayer isKindOfClass:MSSymbolInstance]) {
-            log("getEffectiveLayers: symbolinstance: " + mslayer.name());
+            dlog("getEffectiveLayers: symbolinstance: " + mslayer.name());
             var master = getMasterSymbol(mslayer);
             var effective = getEffectiveLayers(master, forceRecursive);
-            log("getEffectiveLayers: symbolinstance: effective " + effective);
+            dlog("getEffectiveLayers: symbolinstance: effective " + effective);
             var layers = symbolizeLayers(effective, mslayer);
             return layers;
         } else if (mslayer && [mslayer isKindOfClass:MSLayerGroup]) {
-//            log("getEffectiveLayers: group: " + mslayer.name());
+//            dlog("getEffectiveLayers: group: " + mslayer.name());
             var children = mslayer.children()
             var all = [NSMutableArray array];
 
@@ -736,7 +762,7 @@ var MagicMirrorJS = function(identifier) {
             return all;
 
         } else if (mslayer && [mslayer isKindOfClass:MSShapePathLayer]) {
-//            log("getEffectiveLayers: shapepathlayer: " + mslayer.name());
+//            dlog("getEffectiveLayers: shapepathlayer: " + mslayer.name());
             var parent = mslayer.ancestors().lastObject();
             return validateLayer(parent) ? [parent] : []
         }
@@ -748,16 +774,18 @@ var MagicMirrorJS = function(identifier) {
         var artboardID = self.valueForLayer("artboardID", layer);
         var artboardID2 = nil;
         if (artboardID_mm2_name) {
-//            log("artboardLookup:" + _artboardsLookupByName);
+//            dlog("artboardLookup:" + _artboardsLookupByName);
             artboardID2 = ! isNullOrNil(_artboardsLookupByName[artboardID_mm2_name]) ? _artboardsLookupByName[artboardID_mm2_name].objectID() : nil;
-//            log("artboardLookup: artboardID2" + artboardID2);
+//            dlog("artboardLookup: artboardID2" + artboardID2);
         }
-//        log("artboardLookup: artboardID" + artboardID);
+//        dlog("artboardLookup: artboardID" + artboardID);
 
         return artboardID || artboardID2;
     }
 
     var getLayerInfo = function(layer, symbol) {
+
+        dlog("onchange.js getLayerInfo 0 ");
 
         var info = [NSMutableDictionary dictionary];
 
@@ -767,6 +795,8 @@ var MagicMirrorJS = function(identifier) {
         info["class"] = layer.className();
         info["imageQuality"] = self.imageQuality(layer);
         info["needsPro"] = false;
+
+        dlog("onchange.js getLayerInfo 1 ");
 
         info["artboardID"] = self.valueForLayer("artboardID", layer);
 
@@ -781,6 +811,8 @@ var MagicMirrorJS = function(identifier) {
             info["needsProReason"] = "Image Quality @2x or above is a Pro feature.";
         }
 
+        dlog("onchange.js getLayerInfo 2 ");
+
         if (info["artboardID"]) {
             var parent = findLayer(info["artboardID"]);
 
@@ -791,6 +823,9 @@ var MagicMirrorJS = function(identifier) {
                 info["needsProReason"] = "Using Slice as the source is a Pro feature.";
             }
         }
+
+        dlog("onchange.js getLayerInfo 3 ");
+
 
         if (symbol) {
             info["needsPro"] = true;
@@ -814,20 +849,36 @@ var MagicMirrorJS = function(identifier) {
             info["needsProReason"] = "Symbol perspective overrides is a Pro feature.";
         }
 
+        dlog("onchange.js getLayerInfo 4 ");
+
         var points = getPointsFromLayer(layer);
         _mmshape.scale = self.imageQuality(layer) || 1;
         _mmshape.path = points;
-        _mmshape.bounds = layer.bounds();
-        info["bounds"] = NSStringFromRect(layer.bounds());
+
+        dlog("onchange.js getLayerInfo 5 ");
+
+        var layerBounds = MMRectFromLayer(layer);
+        _mmshape.bounds = MM3RectMake(layerBounds.origin.x, layerBounds.origin.y, layerBounds.size.width, layerBounds.size.height);
+
+        dlog("onchange.js getLayerInfo 6 ");
+
+        info["bounds"] = NSStringFromRect(layerBounds);
+        dlog("onchange.js getLayerInfo 7 ");
         info["points"] = getPointsFromLayer(layer).componentsJoinedByString(", ");
-        info["crop"] = NSStringFromRect(getCropRectFromLayer(layer));
+        dlog("onchange.js getLayerInfo 7.1 ");
+        info["crop"] = getCropRectFromLayer(layer);
+        dlog("onchange.js getLayerInfo 7.2 ");
         info["isClockwised"] = isClockwised(points);
 
+        dlog("onchange.js getLayerInfo 7.3 ");
         // MMShape
-        info["scaledCropRect"] = NSStringFromRect(_mmshape.scaledCroppingRect());
+        info["scaledCropRect"] = _mmshape.scaledCroppingRect();
+
+        dlog("onchange.js getLayerInfo 7.4 ");
         info["scaledSize"] = NSStringFromSize(_mmshape.scaledSize());
         info["normalizedPoints"] = _mmshape.normalizedPoints().componentsJoinedByString(", ");
 
+        dlog("onchange.js getLayerInfo 8 ");
         if (layer.isKindOfClass(MSShapeGroup)) {
             var path = layer.layers().firstObject();
             var curvePoints = path.allCurvePoints();
@@ -844,6 +895,7 @@ var MagicMirrorJS = function(identifier) {
             info["allCornerRadius"] = allCornerRadius;
         }
 
+        dlog("onchange.js getLayerInfo 9 ");
         return info;
     }
 
@@ -864,7 +916,7 @@ var MagicMirrorJS = function(identifier) {
 
     var getCropRectFromLayer = function(layer) {
 
-        var size = layer.bounds().size;
+        var size = MMRectFromLayer(layer).size;
         var points = getPointsFromLayer(layer);
         var pointsBounds = function(points) {
             var origin = CGPointMake(0, 0);
@@ -876,10 +928,7 @@ var MagicMirrorJS = function(identifier) {
 
             origin.x = -origin.x;
 
-            var bounds = CGRectMake(0, 0, 0, 0);
-//            size.width += origin.x;
-            bounds.size = size;
-            bounds.origin = origin;
+            var bounds = MMRectMake(origin.x, origin.y, size.width, size.height);
 
             return bounds
         }
@@ -889,28 +938,33 @@ var MagicMirrorJS = function(identifier) {
     }
 
     var getCropped = function(layer, image, scale) {
+        dlog("onchange.js getCropped 0 ");
 
         var bounds = getCropRectFromLayer(layer);
 
-        log("fillImageOnLayerWIthScale: 1.3");
+        dlog("onchange.js getCropped 1 bounds " + bounds);
+        dlog("fillImageOnLayerWIthScale: 1.3");
 
         var cropped;
         if (true /*! CGRectEqualsToRect(bounds, layer.bounds()) */) {
 
             _mmshape.scale = scale;
             _mmshape.path = getPointsFromLayer(layer);
-            _mmshape.bounds = layer.bounds();
+            var layerBounds = MMRectFromLayer(layer);
+            _mmshape.bounds = MM3RectMake(layerBounds.origin.x, layerBounds.origin.y, layerBounds.size.width, layerBounds.size.height);
 
+            dlog("fillImageOnLayerWIthScale: 1.4");
             var rect = _mmshape.scaledCroppingRect();
             var scaledSize = _mmshape.scaledSize();
 
+            dlog("fillImageOnLayerWIthScale: 1.5 " + rect);
             cropped = MM3Image.cropImage_withBounds_(image, rect);
-            log("crop image: " + NSStringFromRect(rect) + " realSize:" + NSStringFromSize(scaledSize) + " image size: " + NSStringFromSize(image.size()));
+//            dlog("crop image: " + NSStringFromRect(rect) + " realSize:" + NSStringFromSize(scaledSize) + " image size: " + NSStringFromSize(image.size()));
         } else {
-            log("no need to crop image");
+            dlog("no need to crop image");
         }
 
-        log("fillImageOnLayerWIthScale: 1.4");
+        dlog("fillImageOnLayerWIthScale: 1.6");
 
 
         return cropped;
@@ -1077,15 +1131,15 @@ var MagicMirrorJS = function(identifier) {
         },
         doMigration: function() {
             var todo = toMigrate(migrations, lastSuccessfulMigrationBuild || lastBuild || currentBuild, currentBuild);
-            log("should apply migrations: " + todo);
+            dlog("should apply migrations: " + todo);
 
             if (todo) {
-                log("before migration");
+                dlog("before migration");
                 var success = doMigration(todo);
-                log("migration done! " + success ? "true" : "false");
+                dlog("migration done! " + success ? "true" : "false");
                 return success;
             }
-            log("no migrations");
+            dlog("no migrations");
             return true;
         },
         onSuccess: function() {
@@ -1141,31 +1195,38 @@ var MagicMirrorJS = function(identifier) {
             return manifestForIdentifier(_pluginIdentifier).build == _runtimePluginBuild;
         },
         isPro: function() {
-            log("licenseManager.isPro:" + _licenseManager);
+            dlog("licenseManager.isPro:" + _licenseManager);
             return _licenseManager.isPro();
         },
         isActivated: function() {
-            log("licenseManager.isActivated:" + _licenseManager);
+            dlog("licenseManager.isActivated:" + _licenseManager);
             return _licenseManager.isActivated();
         },
         areaOfLayer: function(layer) {
             return areaOfRectangle(self.getPointsFromLayer(layer));
         },
         getRatio: function(bounds, layer) {
+
+            dlog("onchange.js getRatio: 0 ")
             var width1 = bounds.size.width;
             var height1 = bounds.size.height;
+            dlog("onchange.js getRatio: width1 " + width1)
+            dlog("onchange.js getRatio: height1 " + height1)
 
             var points = self.getPointsFromLayer(layer);
-//            log("getRatio: points " + points)
+            dlog("onchange.js getRatio: points " + points)
             var rotation = self.valueForLayer("rotation", layer) || 0;
 
-//            log("getRatio: rotation " + rotation)
+
+            dlog("onchange.js getRatio: rotation  " + rotation)
+
+//            dlog("getRatio: rotation " + rotation)
             var p0 = NSPointFromString(points[(0 + rotation) % 4]);
             var p1 = NSPointFromString(points[(1 + rotation) % 4]);
             var p2 = NSPointFromString(points[(2 + rotation) % 4]);
             var p3 = NSPointFromString(points[(3 + rotation) % 4]);
 
-//            log("getRatio: p0 " + p0.toString());
+//            dlog("getRatio: p0 " + p0.toString());
 
             var top = distance(p0, p1);
             var bottom = distance(p2, p3);
@@ -1173,7 +1234,10 @@ var MagicMirrorJS = function(identifier) {
             var left = distance(p1, p2);
             var right = distance(p3, p0);
             var height2 = Math.max(left, right);
-//            log("getRatio: height2 " + height2);
+
+            dlog("onchange.js getRatio: width2: " + width2 + " width1: " + width1);
+
+            dlog("onchange.js getRatio: height2: " + height2);
 
             return Math.max(width2/width1, height2/height1)
         },
@@ -1189,21 +1253,21 @@ var MagicMirrorJS = function(identifier) {
                         return this.flipLayer(layer);
                     },
                     description: function() {
-                        log("MM selection: " + getLayerInfo(layer));
+                        dlog("MM selection: " + getLayerInfo(layer));
                     }
                 }
             } else {
                 return {
                     refresh: function() {
-                        log("refresh: " + selection);
+                        dlog("refresh: " + selection);
                         for (var item in selection) {
-                            log(item);
+                            dlog(item);
                             self.refreshLayer(item);
                         });
-                        log("refresh end");
+                        dlog("refresh end");
                     },
                     description: function() {
-                        log("selections: " + selection);
+                        dlog("selections: " + selection);
                     }
                 }
             }
@@ -1211,19 +1275,19 @@ var MagicMirrorJS = function(identifier) {
         },
         valueForLayer:function(key, mslayer) {
             if ( ! mslayer.isKindOfClass(MSLayer)) {
-                log("selection is not an MSLayer, skipping for now");
+                dlog("selection is not an MSLayer, skipping for now");
                 return;
             }
 
             var value = _command.valueForKey_onLayer_forPluginIdentifier(key, mslayer, _pluginIdentifier);
-            log("valueForLayer: 5" + value);
+            dlog("valueForLayer: 5 key = " + key + ", value:" + value);
             return value;
         },
         setValueForKeyOnLayer:function(value, key, mslayer) {
-            log("value: " + value + ", key: `" + key + "` mslayer:" + mslayer + " pluginIdentifier:" + _pluginIdentifier);
+            dlog("value: " + value + ", key: `" + key + "` mslayer:" + mslayer + " pluginIdentifier:" + _pluginIdentifier);
 
             if ( ! mslayer.isKindOfClass(MSLayer)) {
-                log("selection is not an MSLayer, skipping for now");
+                dlog("selection is not an MSLayer, skipping for now");
                 return;
             }
 
@@ -1312,7 +1376,7 @@ var MagicMirrorJS = function(identifier) {
         fillImageInSymbolOnLayer: function(image, symbol, layer) {
 
             var layerID = layer.objectID()
-            log("MM: fillImageInSymbolOnLayer { layerID:" + layerID);
+            dlog("MM: fillImageInSymbolOnLayer { layerID:" + layerID);
 
             /*
             var overrides = [NSMutableDictionary dictionary];
@@ -1321,8 +1385,8 @@ var MagicMirrorJS = function(identifier) {
                 var data = [[MSImageData alloc] initWithImage:image convertColorSpace:false];
 
                 var originalOverrides = symbol.overrides();
-                log("original:");
-                log(originalOverrides);
+                dlog("original:");
+                dlog(originalOverrides);
 
                 if (symbol.overrides() && symbol.overrides().objectForKey(0)) {
                     overrides = symbol.overrides().objectForKey(0).mutableCopy()
@@ -1342,20 +1406,20 @@ var MagicMirrorJS = function(identifier) {
 
             // Sketch 44.1
             if (image) {
-                log("original:");
+                dlog("original:");
                 var data = [[MSImageData alloc] initWithImage:image convertColorSpace:false];
                 symbol.addOverrides_ancestorIDs_(data, [layerID]);
             } else {
                 symbol.addOverrides_ancestorIDs_(nil, [layerID]);
             }
-            log("}");
+            dlog("}");
         },
         linkLayerIDWithArtboardIDInSymbol: function(layerID, artboardID, symbolID) {
             var symbol = this.findLayer(symbolID);
             var overrides = (this.valueForLayer("overrides", symbol) || [NSDictionary dictionary]).mutableCopy();
             overrides[layerID] = { "artboardID": artboardID };
             this.setValueForKeyOnLayer(overrides, "overrides", symbol);
-//            log(overrides);
+//            dlog(overrides);
             this.refreshLayerIDInSymbol(layerID, symbol);
         },
         linkLayerIDWithArtboardID: function(layerID, artboardID) {
@@ -1364,21 +1428,21 @@ var MagicMirrorJS = function(identifier) {
             return this.refreshLayer(layer)
         },
         rotateLayer: function(mslayer) {
-            log("MM: rotateLayer" + mslayer);
+            dlog("MM: rotateLayer" + mslayer);
             var rotation = (this.valueForLayer("rotation", mslayer) || 0) + 1;
             rotation %= 4;
             this.setValueForKeyOnLayer(rotation, "rotation", mslayer);
             this.refreshLayer(mslayer);
         },
         flipLayer: function(mslayer) {
-            log("MM: flipLayer");
+            dlog("MM: flipLayer");
             var flipped = (this.valueForLayer("flipped", mslayer) || 0) + 1;
             flipped %= 2;
             this.setValueForKeyOnLayer(flipped, "flipped", mslayer);
             this.refreshLayer(mslayer);
         },
         refreshAll:function () {
-            log("MM: refresh All");
+            dlog("MM: refresh All");
 
             var layers = _document.currentPage().layers();
             for(var i=0; i < layers.count(); i++) {
@@ -1388,7 +1452,7 @@ var MagicMirrorJS = function(identifier) {
         refreshArtboard: function(artboard) {
 
             var effective = artboard.layers();
-            log("MM: refresh artboard: effective " + effective);
+            dlog("MM: refresh artboard: effective " + effective);
             for (var i = 0; i < effective.count(); i++) {
                 var layer = effective[i];
                 this.refreshLayer(layer);
@@ -1397,7 +1461,7 @@ var MagicMirrorJS = function(identifier) {
         refreshLayer: function(mslayer) {
             // find artboard
 
-            log("MM: refreshLayer: " + mslayer);
+            dlog("MM: refreshLayer: " + mslayer);
 
             if ( ! mslayer) {
                 return;
@@ -1412,64 +1476,73 @@ var MagicMirrorJS = function(identifier) {
             }
 
             if (mslayer.isKindOfClass(MSSymbolInstance)) {
-                log("MM: refreshLayer symbolInstance");
+                dlog("MM: refreshLayer symbolInstance");
                 this.refreshSymbol(mslayer);
                 return;
             }
 
             if (mslayer.isKindOfClass(MSArtboardGroup)) {
-                log("MM: refreshLayer artboard");
+                dlog("MM: refreshLayer artboard");
 
                 this.refreshArtboard(mslayer);
                 return;
             }
 
+            dlog("MM: refreshLayer 1 " + mslayer);
+
             if (mslayer.isKindOfClass(MSLayerGroup) && ! mslayer.isKindOfClass(MSShapeGroup)) {
                 var layers = mslayer.layers();
+
+
+                dlog("MM: refreshLayer 1.1 " + layers);
+
                 each(layers, function(layer) {
                      self.refreshLayer(layer);
                      });
                 return;
             }
+            dlog("MM: refreshLayer 1.2 " + mslayer);
 
             if (mslayer.symbolInstanceID) {
-                log("MM: refreshLayer mslayer.symbolInstanceId");
+                dlog("MM: refreshLayer mslayer.symbolInstanceId");
 
                 this.refreshSymbol(this.findLayer(mslayer.symbolInstanceID));
                 return;
             }
 
+            dlog("MM: refreshLayer 1.3 " + mslayer);
+
             var info = getLayerInfo(mslayer);
             var artboardID = info["artboardID"] || info["artboardID_mm2"];
             if (artboardID && [artboardID isKindOfClass:NSNull]) {
-                log("MM: detach layer (" + mslayer.name() + ")");
+                dlog("MM: detach layer (" + mslayer.name() + ")");
                 disableFillImageOnLayer(mslayer);
                 this.setValueForKeyOnLayer(nil, "artboardID", mslayer);
                 this.setValueForKeyOnLayer(nil, "artboardID_mm2", mslayer);
                 return;
             }
-//            log("MM: refreshLayer 2");
+            dlog("MM: refreshLayer 2");
 
             var artboard = this.findLayer(artboardID);
 
-//            log("MM: refreshLayer 2.1");
+            dlog("MM: refreshLayer 2.1");
 
-//            log("MM: refreshLayer 2.2");
+            dlog("MM: refreshLayer 2.2");
 
             var rotation = this.valueForLayer("rotation", mslayer);
-//            log("MM: refreshLayer 2.3: " + rotation);
+            dlog("MM: refreshLayer 2.3: " + rotation);
 
             var flipped = this.valueForLayer("flipped", mslayer);
-//            log("MM: refreshLayer 2.4: " + flipped);
+            dlog("MM: refreshLayer 2.4: " + flipped);
 
             var scale = Math.max(this.valueForLayer("imageQuality", mslayer), 1);
-//            log("MM: refreshLayer 2.5: " + scale);
+            dlog("MM: refreshLayer 2.5: " + scale);
 
             var destinationPoints = this.getPointsFromLayer(mslayer);
-//            log("MM: refreshLayer 2.6: " + destinationPoints);
+            dlog("MM: refreshLayer 2.6: " + destinationPoints);
 
-            var bounds = mslayer.bounds();
-//            log("MM: refreshLayer 3: " + NSStringFromRect(bounds));
+            var bounds = MMRectFromLayer(mslayer);
+            dlog("MM: refreshLayer 3: " + NSStringFromRect(bounds));
 
             var sourceBounds;
             var image = nil;
@@ -1477,9 +1550,10 @@ var MagicMirrorJS = function(identifier) {
             var targetScale;
 
             if (artboard) {
-//                log("MM: refreshLayer 4 artboard");
+                dlog("MM: refreshLayer 4 artboard");
 
-                sourceBounds = artboard.bounds();
+                sourceBounds = MMRectFromLayer(artboard);
+                dlog("MM: refreshLayer 4.1 artboard" + NSStringFromRect(sourceBounds));
                 ratio = self.getRatio(sourceBounds, mslayer);
                 targetScale = ratio * scale;
                 image = generateImage(artboard, targetScale);
@@ -1488,15 +1562,15 @@ var MagicMirrorJS = function(identifier) {
                 return;
             }
 
-//            log("MM: refreshLayer 5");
+            dlog("MM: refreshLayer 5");
 
-            
+
             _mmshape.scale = scale;
             _mmshape.bounds = bounds;
             _mmshape.path = destinationPoints;
             var points = _mmshape.normalizedPoints();
-            
-//            log("MM: refreshLayer 6");
+
+//            dlog("MM: refreshLayer 6");
 
             var info = {
                         "sourceBounds": NSStringFromRect(sourceBounds) || "missing",
@@ -1512,8 +1586,8 @@ var MagicMirrorJS = function(identifier) {
                         "artboard": artboard || "missing",
                         };
 
-//            log("MM: refreshLayer 7");
-//            log("MM: refreshLayer info: " +  NSDictionary.dictionaryWithDictionary(info));
+//            dlog("MM: refreshLayer 7");
+//            dlog("MM: refreshLayer info: " +  NSDictionary.dictionaryWithDictionary(info));
 
             if (points.count() == 4) {
 
@@ -1529,17 +1603,17 @@ var MagicMirrorJS = function(identifier) {
                 info.output = NSStringFromSize(output.size())
 
 
-                log("info: " + NSDictionary.dictionaryWithDictionary(info));
+                dlog("info: " + NSDictionary.dictionaryWithDictionary(info));
                 this.fillImageOnLayerWithScale(mslayer, output, scale);
 
                 return true;
             }
-//            log("MM: refreshLayer done");
+//            dlog("MM: refreshLayer done");
 
             return false;
         },
         refreshLayerIDInSymbol: function(layerID, mssymbol) {
-            log("MM: refreshLayerIDInSymbol layerID: " + layerID);
+            dlog("MM: refreshLayerIDInSymbol layerID: " + layerID);
 
             var overrides = this.valueForLayer("overrides", mssymbol);
 
@@ -1561,10 +1635,10 @@ var MagicMirrorJS = function(identifier) {
                 return;
             }
 
-            log("MM: refreshLayerIDInSymbol 2.0 mslayer " + mslayer);
+            dlog("MM: refreshLayerIDInSymbol 2.0 mslayer " + mslayer);
 
             if (artboardID && [artboardID isKindOfClass:NSNull]) {
-                log("MM: detach layer in symbol (" + mslayer.name() + "): " + overrides);
+                dlog("MM: detach layer in symbol (" + mslayer.name() + "): " + overrides);
                 this.fillImageInSymbolOnLayer(nil, mssymbol, mslayer);
                 overrides = overrides.mutableCopy()
                 overrides.removeObjectForKey(layerID)
@@ -1578,24 +1652,24 @@ var MagicMirrorJS = function(identifier) {
             var placeholder = this.getPlaceholders(artboardID);
 
 
-            log("MM: refreshLayerIDInSymbol 2.1 artboard " + artboard);
+            dlog("MM: refreshLayerIDInSymbol 2.1 artboard " + artboard);
 
-            log("MM: refreshLayerIDInSymbol 2.2 placeholder " + placeholder);
+            dlog("MM: refreshLayerIDInSymbol 2.2 placeholder " + placeholder);
 
             var rotation = this.valueForLayer("rotation", mslayer);
-            log("MM: refreshLayerIDInSymbol 2.3: rotation " + rotation);
+            dlog("MM: refreshLayerIDInSymbol 2.3: rotation " + rotation);
 
             var flipped = this.valueForLayer("flipped", mslayer);
-            log("MM: refreshLayerIDInSymbol 2.4: flipped " + flipped);
+            dlog("MM: refreshLayerIDInSymbol 2.4: flipped " + flipped);
 
             var scale = Math.max(this.valueForLayer("imageQuality", mssymbol), 1);
-            log("MM: refreshLayerIDInSymbol 2.5: scale " + scale);
+            dlog("MM: refreshLayerIDInSymbol 2.5: scale " + scale);
 
             var destinationPoints = this.getPointsFromLayer(mslayer);
-            log("MM: refreshLayerIDInSymbol 2.6: points " + destinationPoints);
+            dlog("MM: refreshLayerIDInSymbol 2.6: points " + destinationPoints);
 
             var bounds = mslayer.bounds();
-            log("MM: refreshLayerIDInSymbol 3: bounds " + NSStringFromRect(bounds));
+            dlog("MM: refreshLayerIDInSymbol 3: bounds " + NSStringFromRect(bounds));
 
 
 
@@ -1605,7 +1679,7 @@ var MagicMirrorJS = function(identifier) {
             var targetScale;
 
             if (artboard) {
-                log("MM: refreshLayerIDInSymbol 4 artboard");
+                dlog("MM: refreshLayerIDInSymbol 4 artboard");
 
                 sourceBounds = artboard.bounds();
                 ratio = self.getRatio(sourceBounds, mslayer);
@@ -1617,7 +1691,7 @@ var MagicMirrorJS = function(identifier) {
             }
 
 
-            log("MM: refreshLayerIDInSymbol 5");
+            dlog("MM: refreshLayerIDInSymbol 5");
 
 
             _mmshape.scale = scale;
@@ -1625,7 +1699,7 @@ var MagicMirrorJS = function(identifier) {
             _mmshape.path = destinationPoints;
             var points = _mmshape.normalizedPoints();
 
-            log("MM: refreshLayerIDInSymbol 6");
+            dlog("MM: refreshLayerIDInSymbol 6");
 
             var info = {
                 "sourceBounds": NSStringFromRect(sourceBounds) || "missing",
@@ -1641,7 +1715,7 @@ var MagicMirrorJS = function(identifier) {
                 "artboard": artboard || "missing",
             };
 
-            log("MM: refreshLayerIDInSymbol 7 info:" + info);
+            dlog("MM: refreshLayerIDInSymbol 7 info:" + info);
 
             if (points.count() == 4) {
 //                var image = generateImage(artboard, scale);
@@ -1655,7 +1729,7 @@ var MagicMirrorJS = function(identifier) {
                 _imageTransform.scale = scale;
 
                 var output = _imageTransform.createOutput();
-                log("output created: " + output);
+                dlog("output created: " + output);
                 var cropped = getCropped(mslayer, output, scale);
                 var watermarked = addWatermarkIfNeeded(cropped, scale, getLayerInfo(mslayer, mssymbol)["needsPro"]);
                 this.fillImageInSymbolOnLayer(watermarked, mssymbol, mslayer);
@@ -1666,16 +1740,16 @@ var MagicMirrorJS = function(identifier) {
         refreshSymbol: function(mssymbol) {
             var overrides = this.valueForLayer("overrides", mssymbol);
 
-            log("MM refreshSymbol: mssymbol " + mssymbol + " overrides " + overrides);
+            dlog("MM refreshSymbol: mssymbol " + mssymbol + " overrides " + overrides);
 
             if (isNullOrNil(overrides)) {
-                log("MM refreshSymbol: nothing to refresh");
+                dlog("MM refreshSymbol: nothing to refresh");
                 return;
             }
 
             var allKeys = overrides.allKeys()
 
-            log("MM refreshSymbol: allKeys " + allKeys);
+            dlog("MM refreshSymbol: allKeys " + allKeys);
             for (var i = 0; i < allKeys.count(); i++) {
                 var layerID = allKeys[i];
                 this.refreshLayerIDInSymbol(layerID, mssymbol);
@@ -1683,14 +1757,14 @@ var MagicMirrorJS = function(identifier) {
         },
         fillImageOnLayerWithScale: function(layer, image, scale) {
 
-            log("fillImageOnLayerWithScale");
+            dlog("fillImageOnLayerWithScale");
 
 //            layer.layers().firstObject().didEdit() // refresh bounds since corner radius issues
 
             var cropped = getCropped(layer, image, scale);
             var watermarked = addWatermarkIfNeeded(cropped, scale, getLayerInfo(layer)["needsPro"]);
             fillImageOnLayer(layer, watermarked || image);
-//            log("fillImageOnLayerWIthScale: 4");
+//            dlog("fillImageOnLayerWIthScale: 4");
 
 //            fillImageOnLayer(layer, image);
         },
@@ -1703,6 +1777,8 @@ var MagicMirrorJS = function(identifier) {
         },
         getThumbnail: function(layer, size) {
 
+            dlog("onchange.js getThumbnail 0 layer: " + layer);
+
             if ([layer isKindOfClass:NSArray]) {
                 if (layer.count() == 1) {
                     layer = layer[0];
@@ -1710,27 +1786,48 @@ var MagicMirrorJS = function(identifier) {
                     return nil;
                 }
             }
+            dlog("onchange.js getThumbnail 1");
+
 
             var mocha = Mocha.sharedRuntime()
             var key = layer.objectID() + NSStringFromSize(size);
+            dlog("onchange.js getThumbnail 2: key " + key);
             var thumbnail = mocha.valueForKey(key);
 
             var snap = mocha.valueForKey(key + "_snap");
 
             var equal = isEqual(snap, layer.immutableModelObject());
 
-            if ( ! thumbnail || ! equal) {
-                var bounds = CGRectMake(0, 0, size.width, size.height);
-                var ratio = 1 / self.getRatio(bounds, layer);
-                var image = generateImage(layer, ratio);
+//            if ( ! thumbnail || ! equal) {
 
-                thumbnail = MM3Image.fillImage_insideBounds_scale_shouldTrimTransparent_shadow_(image, CGRectMake(0, 0, size.width, size.height), 1, false, CGSizeMake(0, -1));
+                dlog("onchange.js getThumbnail 3");
+                var bounds = MMRectMake(0, 0, size.width, size.height);
+
+
+                dlog("onchange.js getThumbnail 4 bounds " + bounds.size.width + "x" + bounds.size.height);
+
+                var ratio = 1 / self.getRatio(bounds, layer);
+                dlog("onchange.js getThumbnail 5 ratio: " + ratio);
+                var image = generateImage(layer, ratio);
+                dlog("onchange.js getThumbnail 6 " + image);
+
+            var shadowSize = CGSizeMake(0, -1);
+            var thumbnailSize = CGRectMake(0, 0, size.width, size.height);
+            dlog("onchange.js getThumbnail 7")
+            dlog("onchange.js getThumbnail 7 shadowSize " + shadowSize.width + "x" + shadowSize.height);
+//            dlog("onchange.js getThumbnail 7 thumbnailSize " + thumbnailSize);
+
+            var insideBounds = MM3RectMake(0, 0, size.width, size.height);
+
+                thumbnail = MM3Image.fillImage_insideBounds_scale_shouldTrimTransparent_shadow_(image, insideBounds, 1, false, shadowSize);
+
+                dlog("onchange.js getThumbnail 7 " + thumbnail);
 
                 mocha.setValue_forKey_(thumbnail, key);
                 mocha.setValue_forKey_(layer.immutableModelObject(), key + "_snap");
-            } else {
-//                log("MM: get thumbnails from cache");
-            }
+//            } else {
+ //               dlog("onchange.js getThumbnail from cache");
+ //           }
 
             return thumbnail;
         },
