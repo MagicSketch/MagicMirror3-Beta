@@ -761,7 +761,6 @@ var MagicMirrorJS = function(identifier) {
         info["objectID"] = layer.objectID();
         info["class"] = layer.className();
         info["imageQuality"] = self.imageQuality(layer);
-        info["needsPro"] = false;
 
         info["artboardID"] = self.valueForLayer("artboardID", layer);
 
@@ -849,7 +848,7 @@ var MagicMirrorJS = function(identifier) {
             return image;
         }
 
-        if (needsPro == true || needsPro == 1) {
+        if (needsPro) {
             var watermarked = MM3Image.addWatermarkToImage(image);
             return watermarked;
         }
@@ -1638,7 +1637,7 @@ var MagicMirrorJS = function(identifier) {
                 var output = _imageTransform.createOutput();
                 log("output created: " + output);
                 var cropped = getCropped(mslayer, output, scale);
-                var watermarked = addWatermarkIfNeeded(cropped, scale, getLayerInfo(mslayer, mssymbol)["needsPro"]);
+                var watermarked = addWatermarkIfNeeded(cropped, scale, getLayerInfo(mslayer, mssymbol).boolForKey("needsPro"));
                 this.fillImageInSymbolOnLayer(watermarked, mssymbol, mslayer);
                 return true;
             }
@@ -1669,7 +1668,7 @@ var MagicMirrorJS = function(identifier) {
 //            layer.layers().firstObject().didEdit() // refresh bounds since corner radius issues
 
             var cropped = getCropped(layer, image, scale);
-            var watermarked = addWatermarkIfNeeded(cropped, scale, getLayerInfo(layer)["needsPro"]);
+            var watermarked = addWatermarkIfNeeded(cropped, scale, getLayerInfo(layer).boolForKey("needsPro"));
             fillImageOnLayer(layer, watermarked || image);
 //            log("fillImageOnLayerWIthScale: 4");
 
