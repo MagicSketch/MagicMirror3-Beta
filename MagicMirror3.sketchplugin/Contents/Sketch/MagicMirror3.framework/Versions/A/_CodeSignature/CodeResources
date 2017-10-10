@@ -6,11 +6,11 @@
 	<dict>
 		<key>Resources/Assets.car</key>
 		<data>
-		eY40+jqvtUpPeqDLgA0q32cW/bk=
+		ao6qiR1TetHi1VeLHvFqEkwC02c=
 		</data>
 		<key>Resources/Info.plist</key>
 		<data>
-		4wzM8oUlY31OlbIDsPq+WncYctw=
+		L3SKPtgfK5b4Zl9ZVnjDwSZVvpI=
 		</data>
 		<key>Resources/MM3ActivationCell.nib</key>
 		<data>
@@ -38,31 +38,31 @@
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/Info.plist</key>
 		<data>
-		/Y2SmkvxsysGOblwUIwHQ35BF+M=
+		kwIT/fJ4VCOJZ9LsgU7PJS8y6jM=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/JmH-JN-EMs-view-Ulr-WK-uRq.nib</key>
 		<data>
-		lD6WWJmNIXuN+6SALL4PIq1c0XE=
+		zxCiHbREbxx9+eCZB8oJjziHADI=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/Ll9-3s-G1X-view-rAH-tQ-3rz.nib</key>
 		<data>
-		7ZDOHf7V7KKk6lNxyu8/QARDKCw=
+		CVtFpLRdIvrtqB5yrV7laCK/130=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/MM3LicenseWindow.nib</key>
 		<data>
-		PeT/QWn6UgOmelZ/Ht4SW1iV9eQ=
+		7mkOl1+SUXkXAHexqrE9o6vFcYg=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/MM3ManageArtboardWindow.nib</key>
 		<data>
-		YwVet33bR2w72tfmDrVy4qqgTm4=
+		dcnAqoVehxCD5iKqG5Q3Gn8d9p8=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/MM3RegisteredWindow.nib</key>
 		<data>
-		Ku+R2d254iQKVRY23bwKffSQCWU=
+		s5VnMZewY2zmUP9+rHwFkj9SByc=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/NSViewController-JmH-JN-EMs.nib</key>
 		<data>
-		QDpv7NuMTeF+D1lBdMkrjcRka50=
+		oc9uRw/GF4JmmfcgJI5ZH3TRgsU=
 		</data>
 		<key>Resources/MM3Storyboard.storyboardc/vD5-Q6-V57-view-4XH-mF-mkj.nib</key>
 		<data>
@@ -75,22 +75,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			eY40+jqvtUpPeqDLgA0q32cW/bk=
+			ao6qiR1TetHi1VeLHvFqEkwC02c=
 			</data>
 			<key>hash2</key>
 			<data>
-			ASzW1pXpIOcEFE7WfV7FO5C6gACXWSqGwtsfyjBiwCE=
+			BwMEE+86eJ997oYABCypPr7tUXsIm4/RJfdjj6UsFio=
 			</data>
 		</dict>
 		<key>Resources/Info.plist</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			4wzM8oUlY31OlbIDsPq+WncYctw=
+			L3SKPtgfK5b4Zl9ZVnjDwSZVvpI=
 			</data>
 			<key>hash2</key>
 			<data>
-			6WrIY3zTa2JljEB8+XlYXVJ0qwOW7ZxX2mzEgIctCaQ=
+			GeRSMcx7gqrHltS3mAAaBlvYLA60UI8qlIgUKVktgEg=
 			</data>
 		</dict>
 		<key>Resources/MM3ActivationCell.nib</key>
@@ -163,77 +163,77 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			/Y2SmkvxsysGOblwUIwHQ35BF+M=
+			kwIT/fJ4VCOJZ9LsgU7PJS8y6jM=
 			</data>
 			<key>hash2</key>
 			<data>
-			/a7r044lcI+TVYZJyne63MT7t/T1JPK3kJK2PGWhHso=
+			9ecmbhF3V4lz8LfRdXKE7/I7Bm5F6m5WLulsxXZiJVM=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/JmH-JN-EMs-view-Ulr-WK-uRq.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			lD6WWJmNIXuN+6SALL4PIq1c0XE=
+			zxCiHbREbxx9+eCZB8oJjziHADI=
 			</data>
 			<key>hash2</key>
 			<data>
-			MdnsFZ3c6YJlz4W27Dgznc8MwPqidzegMUi54yUlkYY=
+			TrrjXydoLn0aUyFX5EhDOnrqzz5so9/jx8DnKSUiHEI=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/Ll9-3s-G1X-view-rAH-tQ-3rz.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			7ZDOHf7V7KKk6lNxyu8/QARDKCw=
+			CVtFpLRdIvrtqB5yrV7laCK/130=
 			</data>
 			<key>hash2</key>
 			<data>
-			3d4u4sh+fU19hdm/kH81n/4SK320HjTZ0p33BJvQecg=
+			fmbR7PgW6oo4TNsiTHI9EhNTG/hy+QxVWhzXf37b0Lg=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/MM3LicenseWindow.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			PeT/QWn6UgOmelZ/Ht4SW1iV9eQ=
+			7mkOl1+SUXkXAHexqrE9o6vFcYg=
 			</data>
 			<key>hash2</key>
 			<data>
-			48+QAweDiKvCslXQdhUxnrai4Pt8MOhoukgojtI60ro=
+			2DvyQ9hx4PmoCbZGvyJiruZNY6W6DbKd26bJLR+JJe8=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/MM3ManageArtboardWindow.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			YwVet33bR2w72tfmDrVy4qqgTm4=
+			dcnAqoVehxCD5iKqG5Q3Gn8d9p8=
 			</data>
 			<key>hash2</key>
 			<data>
-			s+LPZQ6xZsf2RIeSsqTwCx5+M1OoDTK+uJVPisL/yOU=
+			vj1E9fkqeK88lBZvh3L4JfHMAPNt46O8dTLxoX71K1E=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/MM3RegisteredWindow.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Ku+R2d254iQKVRY23bwKffSQCWU=
+			s5VnMZewY2zmUP9+rHwFkj9SByc=
 			</data>
 			<key>hash2</key>
 			<data>
-			EH1Qx8NKjhdu+Cu4+m+ZzUEXxhPDEmiOZmayF5S6KwY=
+			fwRMWDQVljyB8oDGUm54KLpFiHrV4v9S/2ToBHRrDZc=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/NSViewController-JmH-JN-EMs.nib</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			QDpv7NuMTeF+D1lBdMkrjcRka50=
+			oc9uRw/GF4JmmfcgJI5ZH3TRgsU=
 			</data>
 			<key>hash2</key>
 			<data>
-			5OovhRv6OdBY1q0y+noVZE5GNwFeAWA6wlbnE86N2BY=
+			oLHFmA1QX05AwdKAV/LgRn0G+gLKohIAGG/leA3Hrd4=
 			</data>
 		</dict>
 		<key>Resources/MM3Storyboard.storyboardc/vD5-Q6-V57-view-4XH-mF-mkj.nib</key>
