@@ -1,0 +1,39 @@
+{
+  "url": "https://api.github.com/repos/MagicSketch/MagicMirror3-Beta/releases/8225518",
+  "assets_url": "https://api.github.com/repos/MagicSketch/MagicMirror3-Beta/releases/8225518/assets",
+  "upload_url": "https://uploads.github.com/repos/MagicSketch/MagicMirror3-Beta/releases/8225518/assets{?name,label}",
+  "html_url": "https://github.com/MagicSketch/MagicMirror3-Beta/releases/tag/Beta/3.0.12",
+  "id": 8225518,
+  "tag_name": "Beta/3.0.12",
+  "target_commitish": "master",
+  "name": null,
+  "draft": false,
+  "author": {
+    "login": "mickmak-busicat",
+    "id": 16607137,
+    "avatar_url": "https://avatars0.githubusercontent.com/u/16607137?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/mickmak-busicat",
+    "html_url": "https://github.com/mickmak-busicat",
+    "followers_url": "https://api.github.com/users/mickmak-busicat/followers",
+    "following_url": "https://api.github.com/users/mickmak-busicat/following{/other_user}",
+    "gists_url": "https://api.github.com/users/mickmak-busicat/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/mickmak-busicat/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/mickmak-busicat/subscriptions",
+    "organizations_url": "https://api.github.com/users/mickmak-busicat/orgs",
+    "repos_url": "https://api.github.com/users/mickmak-busicat/repos",
+    "events_url": "https://api.github.com/users/mickmak-busicat/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/mickmak-busicat/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "prerelease": false,
+  "created_at": "2017-10-23T18:14:08Z",
+  "published_at": "2017-10-23T18:14:11Z",
+  "assets": [
+
+  ],
+  "tarball_url": "https://api.github.com/repos/MagicSketch/MagicMirror3-Beta/tarball/Beta/3.0.12",
+  "zipball_url": "https://api.github.com/repos/MagicSketch/MagicMirror3-Beta/zipball/Beta/3.0.12",
+  "body": null
+}
