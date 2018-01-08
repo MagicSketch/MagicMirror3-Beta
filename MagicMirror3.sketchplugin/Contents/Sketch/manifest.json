@@ -4,10 +4,10 @@
 	"author": "James Tang",
 	"authorEmail" : "james@magicsketch.io",
 	"homepage": "https://github.com/MagicSketch/MagicMirror",
-	"identifier" : "MM3PluginIdentifier",
-	"compatibleVersion": "MM3SketchVersion",
-	"build": MM3PluginCode,
-	"version": "MM3PluginVersion",
+	"identifier" : "io.magicsketch.MagicMirror3c",
+	"compatibleVersion": "47",
+	"build": 36,
+	"version": "3.1.0",
     "appcast": "https://api.magicsketch.io/r/appcast.xml",
 
 	"commands": [
