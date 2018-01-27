@@ -50,18 +50,17 @@ var onSelectionChanged = function(context) {
 };
 
 var enable = function(context) {
-    var identifier = context.plugin.valueForKey("_identifier");
-    var disabledIdentifier = identifier + ".disabled";
-    NSUserDefaults.standardUserDefaults().setBool_forKey(false, disabledIdentifier);
-    NSUserDefaults.standardUserDefaults().synchronize();
-    
-    //context.document.reloadInspector();
-    var panel = MagicMirror3Panel.getSharedInstance(context);
-    panel.track("Enabled MagicMirror");
-    panel.onSelectionChange([]);
-    
-    context.document.showMessage("Magic Mirror 3 Enabled");
-    
+        var identifier = context.plugin.valueForKey("_identifier");
+        var disabledIdentifier = identifier + ".disabled";
+        NSUserDefaults.standardUserDefaults().setBool_forKey(false, disabledIdentifier);
+        NSUserDefaults.standardUserDefaults().synchronize();
+        
+        //context.document.reloadInspector();
+        var panel = MagicMirror3Panel.getSharedInstance(context);
+        panel.track("Enabled MagicMirror");
+        panel.onSelectionChange([]);
+        
+        context.document.showMessage("Magic Mirror 3 Enabled");
 };
 
 var disable = function(context) {
@@ -87,3 +86,21 @@ var disable = function(context) {
     
     context.document.showMessage("Magic Mirror 3 Disabled");
 };
+
+var refreshAll = function(context){
+    var identifier = context.plugin.valueForKey("_identifier");
+    var disabledIdentifier = identifier + ".disabled";
+    var isDisabled = NSUserDefaults.standardUserDefaults().boolForKey(disabledIdentifier);
+    
+    if (isDisabled){
+        context.document.showMessage("Please enable Magic Mirror 3 first");
+        return false;
+    }
+    
+    var panel = MagicMirror3Panel.getSharedInstance(context);
+    if(panel){
+        panel.track("Refresh All From Menu");
+        panel.refreshAll();
+        context.document.showMessage("Artboards refreshed");
+    }
+}
