@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>16G29</string>
+	<string>16G1212</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -43,7 +43,7 @@
 	<key>MM3PluginEnv</key>
 	<string></string>
 	<key>MM3PluginIdentifier</key>
-	<string>io.magicsketch.MagicMirror3c</string>
+	<string>io.magicsketch.mirror</string>
 	<key>MM3PluginName</key>
 	<string>Magic Mirror 3.5.0 (37)</string>
 	<key>MM3SketchVersion</key>

@@ -4,7 +4,7 @@
 	"author": "James Tang",
 	"authorEmail" : "james@magicsketch.io",
 	"homepage": "https://github.com/MagicSketch/MagicMirror",
-	"identifier" : "io.magicsketch.MagicMirror3c",
+	"identifier" : "io.magicsketch.mirror",
 	"compatibleVersion": "47",
 	"build": 37,
 	"version": "3.5.0",
